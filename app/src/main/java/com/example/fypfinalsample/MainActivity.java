@@ -49,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String catID = prefs.getString("catID", "");
         RequestParams params = new RequestParams();
+
+        //-----------------ToBeUpdated------------------
         //params.add("categoryId", catID);
-        params.add("categoryId", String.valueOf(1));
+        params.add("categoryId", String.valueOf(4));
+        //-----------------ToBeUpdated------------------
         //==================SharedPref==================
 
         //=================StupidListView=====================

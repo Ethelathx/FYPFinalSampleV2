@@ -101,13 +101,12 @@ public class InfoList extends AppCompatActivity {
                 //------------------AddCusDataBase-------------------
                 //------------------DataToBeAdded--------------------
                 String pname = itemName.getText().toString();
-                String cname = "EmptyUserName";
                 int quantity = Integer.parseInt(quantityNumber.getText().toString());
                 double price = Double.parseDouble(itemPrice.getText().toString());
                 //------------------DataToBeAdded--------------------
                 if (quantity >= 1) {
                     DBCusOrderTemp dbc = new DBCusOrderTemp(InfoList.this);
-                    long inserted_id = dbc.insertCustomer(pname, cname, quantity, price);
+                    long inserted_id = dbc.insertCustomer(pname, quantity, price);
                     dbc.close();
                     //------------------AddCusDataBase-------------------
                     Intent intent = new Intent(InfoList.this, Summarylist.class);

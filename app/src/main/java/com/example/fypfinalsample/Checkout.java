@@ -3,12 +3,15 @@ package com.example.fypfinalsample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Checkout extends AppCompatActivity {
 
@@ -23,6 +26,7 @@ public class Checkout extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
         Intent intent = getIntent();
         String TotalPrice = intent.getStringExtra("totalprice");
+
 
         //==================MatchingGame==========================
         //----------------------TextView------------------
@@ -55,6 +59,13 @@ public class Checkout extends AppCompatActivity {
         tvTotal.setText(String.format("$%.2f", total));
         //=====================Setup==========================
 
+        //---------------------------------SharedPref-------------------------------------------
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Checkout.this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("totalprices", String.valueOf(total));
+        editor.commit();
+        //---------------------------------SharedPref-------------------------------------------
+
 
         //----------------------LoginTVTextHandle----------------------
         tvBtnLogin.setOnClickListener(new View.OnClickListener() {
@@ -81,13 +92,73 @@ public class Checkout extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //CheckEntire
-                //PassDB
-                //NextPage
-                Intent intent = new Intent(Checkout.this, Login.class);
-                startActivity(intent);
+                checkEntry();
+                if (checkEntry() == false) {
+                    Toast.makeText(Checkout.this, "Certain fills cannot be empty",
+                            Toast.LENGTH_LONG).show();
+                }
+                else {
+                    //---------------------------------SharedPref-------------------------------------------
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Checkout.this);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    //---------------------------------SharedPref-------------------------------------------
+
+                    checkBox();
+                    if (checkBox() == true) {
+                        editor.putString("cbCheck", "Yes");
+                    }
+                    else {
+                        editor.putString("cbCheck", "No");
+                    }
+                    //------------------------ThrowAllInEditor-------------------------------
+                    editor.putString("newsContact", etEmailPhone.getText().toString());
+                    editor.putString("firstName", etFirstName.getText().toString());
+                    editor.putString("lastName", etLastName.getText().toString());
+                    editor.putString("address", etAddress.getText().toString());
+                    editor.putString("apartment", etApartment.getText().toString());
+                    editor.putString("city", etCity.getText().toString());
+                    editor.putString("country", etCountry.getText().toString());
+                    editor.putString("postal", etPostalCode.getText().toString());
+                    editor.putString("number", etPhoneNumber.getText().toString());
+                    editor.commit();
+                    //------------------------ThrowAllInEditor-------------------------------
+
+                    Intent intent = new Intent(Checkout.this, Login.class);
+                    startActivity(intent);
+                }
+
             }
         });
         //----------------------ContinueButton----------------------
     }
+
+
+
+    //==========================Constructor=========================
+    private boolean checkBox(){
+        if (cbOffer.isChecked() == true){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private boolean checkEntry(){
+        String ep = etEmailPhone.getText().toString();
+        String ln = etEmailPhone.getText().toString();
+        String ad = etEmailPhone.getText().toString();
+        String ct = etEmailPhone.getText().toString();
+        String c = etEmailPhone.getText().toString();
+        String pc = etEmailPhone.getText().toString();
+        String pn = etEmailPhone.getText().toString();
+
+        if (ep.isEmpty() || ln.isEmpty() || ad.isEmpty() || ct.isEmpty() || c.isEmpty() || pc.isEmpty() || pn.isEmpty()){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    //==========================Constructor=========================
 }

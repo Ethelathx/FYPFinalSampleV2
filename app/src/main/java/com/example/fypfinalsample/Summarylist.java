@@ -3,7 +3,9 @@ package com.example.fypfinalsample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,7 +20,7 @@ public class Summarylist extends AppCompatActivity {
     ArrayAdapter aa;
     ArrayList<CustomerOrder> newCus;
     TextView tvSubText, tvSubTotal;
-    Button btnCheckout;
+    Button btnCheckout, btnAddMore;
 
 
     @Override
@@ -31,6 +33,7 @@ public class Summarylist extends AppCompatActivity {
         tvSubText = findViewById(R.id.SubTotalText);
         tvSubTotal = findViewById(R.id.subTotal);
         btnCheckout = findViewById(R.id.btnCheckout);
+        btnAddMore = findViewById(R.id.btnReturn);
         //==================MatchingGame==========================
 
         //==================Setup==========================
@@ -71,12 +74,41 @@ public class Summarylist extends AppCompatActivity {
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent i = new Intent(Summarylist.this, Checkout.class);
                 i.putExtra("totalprice", String.valueOf(finalTotalPrice));
                 startActivity(i);
             }
         });
         //==============================BtnCheckOutHandle=========================
+
+        //==============================BtnAddMore=========================
+        btnAddMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Summarylist.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
+        //==============================BtnAddMore=========================
+
+
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK){
+            DBCusOrderTemp dbh = new DBCusOrderTemp(Summarylist.this);
+            newCus.clear();
+            newCus.addAll(dbh.getCustomerData());
+            dbh.close();
+            aa.notifyDataSetChanged();
+        }
+    }
+
 
 }
